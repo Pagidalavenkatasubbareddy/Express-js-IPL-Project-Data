@@ -1,22 +1,35 @@
 const matchesData = require('./../public/output/matches.json');
 const fs = require('fs');
 
-const tossAndMatchWins = {};
-
-matchesData.forEach(match => {
-    const tossWinner = match.toss_winner;
-    const matchWinner = match.winner;
-
-    if (tossWinner && matchWinner) {
-        if (!tossAndMatchWins[tossWinner]) {
-            tossAndMatchWins[tossWinner] = {};
-        }
-        if (!tossAndMatchWins[tossWinner][matchWinner]) {
-            tossAndMatchWins[tossWinner][matchWinner] = 1;
+try {
+  const tossAndMatchWins = matchesData => {
+    const teams = matchesData.reduce((acc, match) => {
+      if (match.toss_winner === match.winner) {
+        if (acc[match.toss_winner]) {
+          acc[match.toss_winner]++
         } else {
-            tossAndMatchWins[tossWinner][matchWinner]++;
+          acc[match.toss_winner] = 1
         }
-    }
-});
+      }
+      return acc
+    }, [])
 
-fs.writeFileSync('./../public/output/tossAndMatchWins.json', JSON.stringify(tossAndMatchWins, null, 2));
+    const res = []
+
+    for (let team in teams) {
+      res.push(`${team}: ${teams[team]} times`)
+    }
+    return res
+  }
+
+  const res = tossAndMatchWins(matchesData)
+
+  fs,
+    fs.writeFileSync(
+      `src/public/output/tossAndMatchWins.json`,
+      JSON.stringify(res, null, 2)
+    )
+    
+} catch (error) {
+  console.log(error)
+}

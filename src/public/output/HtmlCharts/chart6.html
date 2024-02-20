@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Highcharts Chart</title>
+    <!-- Include Highcharts library -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <!-- Container for the chart -->
+    <div id="chartContainer" style="width: 100%; height: 400px"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        fetch('http://localhost:7000/6')
+          .then(data => {
+            return data.json()
+          })
+          .then(data => {
+            // Extracting data for Highcharts
+            var seriesData = []
+            for (var year in data) {
+              seriesData.push({
+                name: data[year].player,
+                y: data[year].count
+              })
+            }
+
+            // Create the chart
+            Highcharts.chart('chartContainer', {
+              chart: {
+                type: 'column'
+              },
+              title: {
+                text: 'Player of the match Over the Years'
+              },
+              xAxis: { title: {
+                  text: 'years'
+                },
+                categories: Object.keys(data)
+              },
+              yAxis: {
+                  title: {
+                    text: 'Count'
+                  }
+              },
+              series: [
+                {
+                  name: 'count',
+                  data: seriesData
+                }
+              ]
+            })
+          })
+      })
+    </script>
+  </body>
+</html>

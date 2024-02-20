@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Highcharts Chart</title>
+    <!-- Include Highcharts library -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <div id="chartContainer" style="width: 100%; height: 100%"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Fetch data from the server
+        fetch('http://localhost:7000/8')
+          .then(response => response.json())
+          .then(data => {
+            const chartData = []
+
+            // Convert data into Highcharts series format
+            for (const [player, stats] of Object.entries(data)) {
+              chartData.push({
+                name: player,
+                y: stats.count
+              })
+            }
+
+            // Render chart
+            Highcharts.chart('chartContainer', {
+              chart: {
+                type: 'column'
+              },
+              title: {
+                text: 'Highest Dismissals'
+              },
+              xAxis: {
+                type: 'category',
+                title: {
+                  text: 'Player'
+                }
+              },
+              yAxis: {
+                title: {
+                  text: 'Count'
+                }
+              },
+              series: [
+                {
+                  name: 'Count',
+                  data: chartData
+                }
+              ]
+            })
+          })
+          .catch(error => console.error('Error fetching data:', error))
+      })
+    </script>
+  </body>
+</html>

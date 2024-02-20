@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IPL Teams Participation Chart</title>
+    <!-- Add Highcharts CDN -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <div id="chartContainer" style="height: 400px"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Data
+        fetch('http://localhost:7000/5')
+          .then(data => {
+            return data.json()
+          })
+          .then(data => {
+            const teamWins = {}
+            console.log(data);
+
+            // Iterate through each string in the input array
+            data.forEach(entry => {
+              // Split the string by ': ' to separate team name and number of wins
+              const [team, winsString] = entry.split(': ')
+              // Extract the number of wins as an integer
+              const wins = parseInt(winsString)
+
+              // Store the team name and its wins in the teamWins object
+              teamWins[team] = wins
+            })
+
+            const teamsData = Object.entries(teamWins)
+
+            // Extracting data for Highcharts
+            var chartData = teamsData.map(function (team) {
+              return { name: team[0], y: team[1] }
+            })
+
+            // Creating the chart
+            Highcharts.chart('chartContainer', {
+              chart: {
+                type: 'column'
+              },
+              title: {
+                text: 'Team won toss and match'
+              },
+              xAxis: {
+                type: 'category',
+                title: {
+                  text: 'Teams'
+                }
+              },
+              yAxis: {
+                title: {
+                  text: 'Number of Times'
+                }
+              },
+              series: [
+                {
+                  name: 'Teams',
+                  data: chartData
+                }
+              ]
+            })
+          })
+      })
+    </script>
+  </body>
+</html>

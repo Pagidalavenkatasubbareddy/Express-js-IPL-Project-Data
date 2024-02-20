@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Strike Rate per Season</title>
+    <!-- Load Highcharts from CDN -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <div id="container" style="width: 100%; height: 400px"></div>
+    <!-- Include your JavaScript file -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Make an AJAX request to fetch data
+        fetch('http://localhost:7000/7')
+          .then(response => response.json())
+          .then(data => {
+            // Process the data and create the chart
+            const seasons = Object.keys(data)
+            const seriesData = []
+
+            seasons.forEach(season => {
+              const players = data[season]
+              const playerCount = Object.keys(players).length
+              let totalStrikeRate = 0
+
+              for (const player in players) {
+                totalStrikeRate += parseFloat(players[player].strikeRate)
+              }
+
+              const averageStrikeRate = totalStrikeRate / playerCount
+              seriesData.push({
+                name: season,
+                y: averageStrikeRate
+              })
+            })
+
+            // Render Highcharts chart
+            Highcharts.chart('container', {
+              chart: {
+                type: 'column'
+              },
+              title: {
+                text: 'Average Strike Rate per Season'
+              },
+              xAxis: {
+                categories: seasons,
+                title: {
+                  text: 'Season'
+                }
+              },
+              yAxis: {
+                title: {
+                  text: 'Average Strike Rate'
+                }
+              },
+              series: [
+                {
+                  name: 'Average Strike Rate',
+                  data: seriesData
+                }
+              ]
+            })
+          })
+          .catch(error => console.error('Error:', error))
+      })
+    </script>
+  </body>
+</html>

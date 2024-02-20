@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IPL Team Performance</title>
+    <!-- Include Highcharts -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <!-- Container for the chart -->
+    <div
+      id="chart-container"
+      style="min-width: 310px; height: 400px; margin: 0 auto"
+    ></div>
+
+    <!-- Script to generate the chart -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        fetch('http://localhost:7000/2')
+          .then(data => {
+            return data.json()
+          })
+          .then(data => {
+
+            var seriesData = []
+            for (var year in data) {
+              var yearData = data[year]
+              var seriesItem = {
+                name: year,
+                data: []
+              }
+              for (var team in yearData) {
+                seriesItem.data.push({
+                  name: team,
+                  y: yearData[team]
+                })
+              }
+              seriesData.push(seriesItem)
+            }
+
+            // Create the chart
+            Highcharts.chart('chart-container', {
+              chart: {
+                type: 'column'
+              },
+              title: {
+                text: 'Team Performance over years'
+              },
+              xAxis: {
+                type: 'category'
+              },
+              yAxis: {
+                title: {
+                  text: 'matchesWon'
+                }
+              },
+              series: seriesData
+            })
+          })
+      })
+    </script>
+  </body>
+</html>

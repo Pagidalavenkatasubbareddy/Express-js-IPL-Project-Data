@@ -19,5 +19,5 @@ const matchesWonPerTeamPerYear = matchesData.reduce((acc, match) => {
   return acc ;
 }, {});                       // ekada manam empty object ga tesukuntunam aniaaa artham {}
 
-fs.writeFileSync(`/./../public/output/matchesWonPerTeamPerYear.json`, JSON.stringify(matchesWonPerTeamPerYear, null, 2));
+fs.writeFileSync(`src/public/output/matchesWonPerTeamPerYear.json`, JSON.stringify(matchesWonPerTeamPerYear, null, 2));
    // convertion for json file to fs file ....

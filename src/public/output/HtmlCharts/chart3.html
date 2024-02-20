@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IPL Teams Performance Chart</title>
+    <!-- Include Highcharts -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <div id="container" style="width: 100%; height: 400px"></div>
+
+    <script>
+      // Data
+      fetch('http://localhost:7000/3')
+        .then(data => {
+          return data.json()
+        })
+        .then(teamData => {
+          // Convert data to series format
+          var seriesData = Object.keys(teamData).map(function (key) {
+            return { name: key, y: teamData[key] }
+          })
+
+          // Create chart
+          Highcharts.chart('container', {
+            chart: {
+              type: 'column'
+            },
+            title: {
+              text: 'Extra runs conceded per team in 2016'
+            },
+            xAxis: {
+              title: {
+                text: 'Teams'
+              },
+              categories: Object.keys(teamData)
+            },
+            yAxis: {
+              title: {
+                text: 'Extra runs'
+              }
+            },
+            series: [
+              {
+                name: 'Extras',
+                data: seriesData
+              }
+            ]
+          })
+        })
+    </script>
+  </body>
+</html>

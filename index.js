@@ -1,52 +1,42 @@
-// const csvtojson = require('csvtojson');
-// const fs = require('fs');
+const express = require('express')
+const app = express()
+const path = require('path')
 
-// const match = '/home/pagidala-venkata-subbareddy/Desktop/Desktop/Mountblue/IPL_PROJECT/src/data/matches.csv';
-// const deliveries = '/home/pagidala-venkata-subbareddy/Desktop/Desktop/Mountblue/IPL_PROJECT/src/data/deliveries.csv';
+app.use(express.static('src/public'))
 
-// const converter=(csvFilePath,name)=>{
-// csvtojson()
-//   .fromFile(csvFilePath)
-//   .then((jsonArray) => {
-//     // Now 'jsonArray' contains an array of JSON objects
+const routes = [
+  '/1', '/2', '/3', '/4', '/5', '/6', '/7', '/8', '/9'
+];
+const filePaths = [
+  'matchesWonPerYear.json',
+  'matchesWonPerTeamPerYear.json',
+  'extraRunsperTeamIn2016.json',
+  'topEconomicalBowlers_2015.json',
+  'tossAndMatchWins.json',
+  'highestPlayerOfTheMatchPerSeason.json',
+  'strikeRatePerSeason.json',
+  'highestDismissals.json',
+  'bestEconomyBowlerInSuperOvers.json'
+];
+app.get("/",(req,res)=>{
+  res.sendFile(path.join(__dirname,`homepage.html`))
+})
 
-//     // If you want to write the JSON array to a file, you can do so
-//     fs.writeFileSync(`/home/pagidala-venkata-subbareddy/Desktop/Desktop/Mountblue/IPL_PROJECT/src/public/output`+ String(name)+`.json`, JSON.stringify(jsonArray, null, 2));
-//   })
-//   .catch((error) => {
-//     console.error('Error converting CSV to JSON:', error);
-//   });
-// }
-
-// const name1="deliveries"
-// const name='matches'
-// const matchesData=converter(match,name)
-// const deliveriesData=converter(deliveries,name1)
-
-
-
-const csvtojson = require('csvtojson');
-const fs = require('fs');
-
-const match = './src/data/matches.csv';
-const deliveries = './src/data/deliveries.csv';
-
-const converter=(csvFilePath,name)=>{
-csvtojson()
-  .fromFile(csvFilePath)
-  .then((jsonArray) => {
-    // Now 'jsonArray' contains an array of JSON objects
-
-    // If you want to write the JSON array to a file, you can do so
-    fs.writeFileSync(`./src/public/output/`+ String(name)+`.json`, JSON.stringify(jsonArray, null, 2));
-  })
-  .catch((error) => {
-    console.error('Error converting CSV to JSON:', error);
+routes.forEach((route, index) => {
+  app.get(route, (req, res) => {
+      res.sendFile(path.join(__dirname,`/src/public/output/${filePaths[index]}`) );
   });
-}
+});
 
-const name1="deliveries"
-const name='matches'
-const matchesData=converter(match,name)
-const deliveriesData=converter(deliveries,name1)
+app.get('/charts/:id', (req, res) => {
+  res.sendFile(path.join(__dirname,`src/public/output/HtmlCharts/chart${req.params.id}.html`))
+})
+
+
+
+const PORT = process.env.PORT || 7000
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port http://localhost:${PORT}`)
+})
 
